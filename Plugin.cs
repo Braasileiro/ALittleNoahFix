@@ -87,51 +87,34 @@ public partial class ALittleNoahFix : BasePlugin
     [HarmonyPatch]
     public class GraphicsPatches
     {
-        [HarmonyPatch(typeof(Volume), nameof(Volume.Update))]
+        [HarmonyPatch(typeof(Volume), "OnEnable")]
         [HarmonyPostfix]
-        public static void PatchPostProcessing(ref Volume __instance)
+        public static void PatchPostProcessing(Volume __instance)
         {
             if (__instance == null) return;
+
+            // Apply the configured effects once when the volume becomes active.
             var volumeProfile = __instance.profile;
             if (volumeProfile == null) return;
-            volumeProfile.TryGet(out DepthOfField dof);
-            if (dof) {
-                dof.active = _bDepthOfField.Value switch {
-                    true  => true,
-                    false => false
-                };
+
+            if (volumeProfile.TryGet(out DepthOfField dof)) {
+                dof.active = _bDepthOfField.Value;
             }
-            
-            volumeProfile.TryGet(out Bloom bloom);
-            if (bloom) {
-                bloom.active = _bBloom.Value switch {
-                    true  => true,
-                    false => false
-                };
+
+            if (volumeProfile.TryGet(out Bloom bloom)) {
+                bloom.active = _bBloom.Value;
             }
-            
-            volumeProfile.TryGet(out ChromaticAberration ca);
-            if (ca) {
-                ca.active = _bChromaticAberration.Value switch {
-                    true  => ca.active,
-                    false => false
-                };
+
+            if (volumeProfile.TryGet(out ChromaticAberration ca)) {
+                ca.active = _bChromaticAberration.Value;
             }
-            
-            volumeProfile.TryGet(out LensDistortion ld);
-            if (ld) {
-                ld.active = _bLensDistortion.Value switch {
-                    true  => ld.active,
-                    false => false
-                };
+
+            if (volumeProfile.TryGet(out LensDistortion ld)) {
+                ld.active = _bLensDistortion.Value;
             }
-            
-            volumeProfile.TryGet(out Vignette vg);
-            if (vg) {
-                vg.active = _bVignette.Value switch {
-                    true  => vg.active,
-                    false => false
-                };
+
+            if (volumeProfile.TryGet(out Vignette vg)) {
+                vg.active = _bVignette.Value;
             }
         }
         
